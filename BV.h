@@ -58,6 +58,7 @@ public:
 
 		void sort();
 		void insert(int x, int y);//вставка ключа в дерево
+		void cut();
 	};
 	
 	Node* _root;//корень

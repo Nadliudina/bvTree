@@ -73,7 +73,6 @@ void BV::Node::sort()
 
 void BV::Node::insert(int x, int y)
 {
-	
 	if (_isleaf == true)
 	{
 		cout << "insert " << x << " " << y << endl;
@@ -92,10 +91,23 @@ void BV::Node::insert(int x, int y)
 		_y = newy;
 		sort();
 		_k++;
-		if (_k <= _leaffanout)
+		if (_k==1)
 		{
-			return;
+			_leftx = x; _rightx = x; _lefty = y; _righty = y;
 		}
+		else //??
+		{
+			if (_leftx > x)
+				_leftx = x;
+			if (_rightx < x)
+				_rightx = x;
+			if (_lefty > y)
+				_lefty = y;
+			if (_righty < y)
+				_righty = y;
+		}
+		if (_k <= _leaffanout)
+		{	return; }
 		else
 		{
 			cout << " MNOGA k= " << _k<<"| "<<x << " " << y << endl;
@@ -114,15 +126,15 @@ void BV::Node::insert(int x, int y)
 		}
 		if (ok==false)
 		{
-			int center_x, center_y;		double li1,li2, l1,l2;
-			center_x = (_next[0]._leftx + _next[0]._rightx) / 2;
-			center_y = (_next[0]._lefty + _next[0]._righty) / 2;
-			l1 = sqrt((_x[0] - center_x) ^ 2 + (_y[0] - center_y) ^ 2);
-			li1 = sqrt((x - center_x) ^ 2 + (y - center_y) ^ 2);
-			center_x = (_next[_knodes-1]._leftx + _next[_knodes - 1]._rightx) / 2;
-			center_y = (_next[_knodes - 1]._lefty + _next[_knodes - 1]._righty) / 2;
-			l2 = sqrt((_x[_knodes - 1] - center_x) ^ 2 + (_y[_knodes - 1] - center_y) ^ 2);
-			li2 = sqrt((x - center_x) ^ 2 + (y - center_y) ^ 2);
+			double center_x, center_y;		double li1,li2, l1,l2;
+			center_x = ((double)_next[0]._leftx + (double)_next[0]._rightx) / 2;
+			center_y = ((double)_next[0]._lefty + (double)_next[0]._righty) / 2;
+			l1 = sqrt(pow((double)_x[0] - center_x,2.0) + pow((double)_y[0] - center_y,2.0));
+			li1 = sqrt(pow((double)x - center_x,2.0) + pow((double)y - center_y,2.0));
+			center_x = ((double)_next[_knodes-1]._leftx + (double)_next[_knodes - 1]._rightx) / 2;
+			center_y = ((double)_next[_knodes - 1]._lefty + (double)_next[_knodes - 1]._righty) / 2;
+			l2 = sqrt(pow((double)_x[_knodes - 1] - center_x, 2.0)  + pow((double)_y[_knodes - 1] - center_y, 2.0) );
+			li2 = sqrt(pow((double)x - center_x, 2.0) + pow((double)y - center_y, 2.0) );
 			if (abs(li1-l1)<=abs(li2-l2))
 			{
 				_next[0].insert(x, y); 
@@ -131,6 +143,76 @@ void BV::Node::insert(int x, int y)
 			{
 				_next[_knodes - 1].insert(x, y);
 			}
+		}
+	}
+}
+
+void BV::Node::cut()
+{
+	int new_knodes ;
+	Node* parts;
+
+	if (_isleaf == true)
+	{
+		if (_isroot==true)
+		{
+			//!!!
+		}
+		new_knodes = _k / _condleaf;
+		parts = new Node[new_knodes];
+		int new_k = _k / _condleaf;
+		for (int i = 0; i < new_knodes; i++)
+		{
+			parts[i]._past = _past;
+			parts[i]._k = new_k;
+		}
+		for (int i = 0; new_k * _condleaf + i < _k; i++)
+		{
+			parts[i]._k++;
+		}
+		Node* newpast = new Node[_past->_knodes - 1 + new_knodes];
+		int ii;
+		for (ii = 0;&_past->_next[ii]!=this ; ii++)//ii<_knodes
+		{
+			newpast[ii] = _past->_next[ii];
+		}
+		for (int i = 0; i < new_knodes; i++)
+		{
+			newpast[ii + i] = parts[i];
+		}
+		for (int i = ii+new_knodes; i < _past->_knodes+new_knodes; i++)
+		{
+			newpast[i] = _past->_next[i-new_knodes];//??
+		}
+		
+		for (int i = 0; i < new_knodes; i++)
+		{
+			for (int j = 0,ii = 0; j < parts[i]._k; j++,ii++)
+			{
+				parts[i]._x[j] = _x[ii];
+				parts[i]._y[j] = _y[ii];
+			}
+		}
+		_past->cut();
+		delete this;
+	}
+	else
+	{
+		if (_isroot == true)
+		{
+			//!!!
+		}
+		new_knodes = _knodes / _conddir;
+		parts = new Node[new_knodes];
+		int new_k = _k / _conddir;
+		for (int i = 0; i < new_knodes; i++)
+		{
+			parts[i]._past = _past;
+			parts[i]._knodes = new_k;
+		}
+		for (int i = 0; new_k * _conddir + i < _knodes; i++)
+		{
+			parts[i]._knodes++;
 		}
 	}
 }
