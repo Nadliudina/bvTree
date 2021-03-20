@@ -13,15 +13,13 @@ private:
 		_conddir,//минимальное количество ключей
 		_size[30];//для функций CUT,makeH1
 
-	int _k;//количество ключей в узле
-	int _knodes;//количество указателей 
+//	int _k;//количество ключей в узле
+//	int _knodes;//количество указателей 
 	void constimput(int leaffanout, int dirfanout);
 
 
-	void imput(int* x, int* y, int k);//ввод значений в узел
 	void cut();//деление узла, переполненного ключами
-	bool makeH1();//деление узла, переполненного указателями
-	void makeH2();//деление узла, переполненного указателями
+
 
 public:
 	void insert(int x, int y);//вставка ключа в дерево

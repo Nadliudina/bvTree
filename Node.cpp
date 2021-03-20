@@ -23,7 +23,7 @@ BV::Node::Node(char root)
 
 void BV::Node::sort()
 {
-	cout << "\nsort";
+	cout << "sort\n";
 	_leftx = _x[0];
 	_rightx = _x[0];
 	_lefty = _y[0];
@@ -69,6 +69,7 @@ void BV::Node::sort()
 	{
 		cout << " " << _x[i] << ":" << _y[i];
 	}
+	cout << endl;
 }
 
 void BV::Node::insert(int x, int y)
@@ -111,7 +112,7 @@ void BV::Node::insert(int x, int y)
 		else
 		{
 			cout << " MNOGA k= " << _k<<"| "<<x << " " << y << endl;
-		//	cut();//!!!
+			cut();//!!!
 		}
 	}
 	else
@@ -147,73 +148,132 @@ void BV::Node::insert(int x, int y)
 	}
 }
 
-void BV::Node::cut()
+void BV::Node::cut()//new_next parts new_knodes
 {
-	int new_knodes ;
-	Node* parts;
-
+	int new_knodes,new_k ;
+	Node* parts, *newroot,*new_next;
 	if (_isleaf == true)
 	{
+		if (_k <= _condleaf)
+			return; 
+		cout << "CUT _k = " <<_k<< endl;
 		if (_isroot==true)
 		{
-			//!!!
+		//	newroot = new Node[1];
+			_past = new Node;
+			_past->_isroot = true;
+			_isroot = false;
+			_past->_knodes = 1;
+			_past->_next = new Node*[2];
+			_past->_next[0] = this;
+			cout << " A this    " << this << endl;
+			cout << " A next[0] " << &_past->_next[0] << endl;
+			cout << " A past isroot " << _past->_isroot << endl;
 		}
 		new_knodes = _k / _condleaf;
 		parts = new Node[new_knodes];
-		int new_k = _k / _condleaf;
+		new_k = _k / new_knodes;
 		for (int i = 0; i < new_knodes; i++)
 		{
 			parts[i]._past = _past;
 			parts[i]._k = new_k;
 		}
-		for (int i = 0; new_k * _condleaf + i < _k; i++)
+		for (int i = 0; new_k * new_knodes + i < _k; i++)
 		{
 			parts[i]._k++;
 		}
-		Node* newpast = new Node[_past->_knodes - 1 + new_knodes];
+		 new_next = new Node[_past->_knodes - 1 + new_knodes];//дочерние узлы
 		int ii;
+	//	cout << " this  " << this << endl;
 		for (ii = 0;&_past->_next[ii]!=this ; ii++)//ii<_knodes
 		{
-			newpast[ii] = _past->_next[ii];
-		}
+	//		cout << " next& " << &_past->_next[ii] << endl;
+			new_next[ii] = _past->_next[ii];
+		}//ii++;???
 		for (int i = 0; i < new_knodes; i++)
 		{
-			newpast[ii + i] = parts[i];
+			new_next[ii + i] = parts[i];
 		}
 		for (int i = ii+new_knodes; i < _past->_knodes+new_knodes; i++)
 		{
-			newpast[i] = _past->_next[i-new_knodes];//??
+			new_next[i] = _past->_next[i-new_knodes];//??
 		}
 		
 		for (int i = 0; i < new_knodes; i++)
 		{
-			for (int j = 0,ii = 0; j < parts[i]._k; j++,ii++)
+			for (int j = 0; j < parts[i]._k; j++)
 			{
-				parts[i]._x[j] = _x[ii];
-				parts[i]._y[j] = _y[ii];
+				parts[i]._x[j] = _x[j];
+				parts[i]._y[j] = _y[j];
 			}
 		}
+		for (int i = 0; i < new_knodes+_past->_knodes-1; i++)
+		{
+			_past->_next[i] = new_next[i];
+		}
+		_past->_knodes += _knodes - 1 + new_knodes;
 		_past->cut();
 		delete this;
 	}
 	else
 	{
+		if (_k <= _conddir)
+			return;
 		if (_isroot == true)
 		{
-			//!!!
+			newroot = new Node;
+			_past = newroot;
+			newroot->_isroot = true;
+			_isroot = false;
+			_past->_knodes = 1;
+			_past->_next = new Node[1];
+			_past->_next[0] = this;
 		}
-		new_knodes = _knodes / _conddir;
+		new_knodes = _knodes / _conddir;//this распадается на new_knodes
+		if (new_knodes*_conddir<_knodes)
+			new_knodes++;
 		parts = new Node[new_knodes];
-		int new_k = _k / _conddir;
+		new_k = 1;// new_knodes[]->_knodes 
+		while (new_k * _conddir < _knodes/new_k)
+			new_k++;
 		for (int i = 0; i < new_knodes; i++)
 		{
 			parts[i]._past = _past;
 			parts[i]._knodes = new_k;
 		}
-		for (int i = 0; new_k * _conddir + i < _knodes; i++)
+		for (int i = 0; new_k * new_knodes + i < _knodes; i++)
 		{
 			parts[i]._knodes++;
 		}
+		new_next = new Node[_past->_knodes - 1 + new_knodes];//дочерние узлы
+		int ii;
+		for (ii = 0; &_past->_next[ii] != this; ii++)//ii<_knodes
+		{
+			new_next[ii] = _past->_next[ii];
+		}//ii++;???
+		for (int i = 0; i < new_knodes; i++)
+		{
+			new_next[ii + i] = parts[i];
+		}
+		for (int i = ii + new_knodes; i < _past->_knodes + new_knodes; i++)
+		{
+			new_next[i] = _past->_next[i - new_knodes];//??
+		}
+		for (int i = 0; i < new_knodes; i++)
+		{
+			for (int j = 0; j < parts[i]._knodes; j++)
+			{
+				parts[i]._next[j] = _next[j];
+			}
+		}
+		for (int i = 0; i < new_knodes + _past->_knodes - 1; i++)
+		{
+			_past->_next[i] = new_next[i];
+		}
+		_past->_knodes += _knodes - 1 + new_knodes;
+		_past->cut();
+		delete this;
+		///////
 	}
 }
 
