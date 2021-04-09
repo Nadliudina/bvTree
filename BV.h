@@ -35,30 +35,32 @@ public:
 	class Node
 	{
 	public:
+		static BV* master;
 		int* _x, * _y;
-		int _k = 0;//количество ключей в узле
-		int _knodes = 0;//количество указателей 
+		int _k ;//количество ключей в узле
+		int _knodes;//количество указателей 
 
-		int _leftx = 1, _rightx = 0, _lefty = 1, _righty = 0;//границы значений 
-		int _dlevel = 0, _clevel = 0;
+		int _leftx , _rightx , _lefty , _righty ;//границы значений 
+		int _dlevel , _clevel ;
 		Node* _guard;//??
-		bool _isguard = false;
+		bool _isguard;
 		bool _isroot;
 		bool _isleaf;
-		Node* _next;//дети
+		Node** _next;//дети
 		Node* _past;//родитель
 
 		Node();
-		Node(int x, int y);//??
-		Node(int* x, int* y);//??
+
 		Node(Node* past);
 		Node(char root);
 
 		void sort();
 		void insert(int x, int y);//вставка ключа в дерево
 		void cut();
+		void info();
 	};
 	
 	Node* _root;//корень
+	
 };
 

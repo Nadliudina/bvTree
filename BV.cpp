@@ -5,14 +5,17 @@ int BV::_dirfanout;
 int BV::_condleaf;
 int BV::_conddir;
 int BV::_size[30];
-
+BV* BV::Node::master;
 
 
 BV::BV(int leaffanout, int dirfanout)
 {
 	constimput( leaffanout,  dirfanout);
 	_root = new Node('r');
-
+	if (BV::Node::master==nullptr)
+	{
+		BV::Node::master = this;
+	}
 //	_next = NULL; _past = NULL;
 //	_knodes = -1; _leftx = -1; _rightx = -1; _lefty = -1; _righty = -1, _k = 0;
 //	_x = nullptr, _y = nullptr; _guard = nullptr; _isguard = NULL;
@@ -98,6 +101,10 @@ bool BV::search(int x, int y)
 
 	return false;
 }
+
+
+
+
 
 //void BV::makeH()
 //{
@@ -198,6 +205,10 @@ void BV::constimput(int leaffanout, int dirfanout)
 
 void BV::insert(int x, int y)
 {
+	//BV::Node::master->_root->insert(x, y);
+	cout << "		   ROOT  " << _root << endl;
+	cout << "	 ROOT knodes " << _root->_knodes << endl;
+	cout << "	   	  ROOT k " << _root->_k << endl;
 	_root->insert(x, y);
 }
 
@@ -279,4 +290,13 @@ void BV::insert(int x, int y)
 //}
 //
 //
+
+
+
+
+
+
+
+
+
 
