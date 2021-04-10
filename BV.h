@@ -58,6 +58,13 @@ public:
 		void insert(int x, int y);//вставка ключа в дерево
 		void cut();
 		void info();
+		void p_info();
+		void print();
+		////////////////////////
+		static int costil[1000];
+		static int costil_count;
+
+
 	};
 	
 	Node* _root;//корень

@@ -7,7 +7,7 @@ int main() {
 	int x = 100;
 	BV a1(7, 4);
 	
-	for (int i = 0; i < 155; i++)
+	for (int i = 0; i < 128; i++)
 	{
 		a1.insert(i, i);
 	}

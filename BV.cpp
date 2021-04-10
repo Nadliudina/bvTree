@@ -16,10 +16,6 @@ BV::BV(int leaffanout, int dirfanout)
 	{
 		BV::Node::master = this;
 	}
-//	_next = NULL; _past = NULL;
-//	_knodes = -1; _leftx = -1; _rightx = -1; _lefty = -1; _righty = -1, _k = 0;
-//	_x = nullptr, _y = nullptr; _guard = nullptr; _isguard = NULL;
-//	_clevel = 0; _dlevel = 0;
 }
 
 
@@ -33,6 +29,10 @@ BV::~BV()
 
 void BV::print_tree()
 {
+	cout << "___PRINT___" << endl << "______________________________" << endl;
+	
+	
+	BV::Node::master->_root->print();
 	//cout << "\n\nPRINT_!________";
 	//if (this)
 	//{

@@ -1,5 +1,6 @@
 #include "BV.h"
-
+int BV::Node::costil_count;
+int BV::Node::costil[1000];
 BV::Node::Node()
 {
 	_isroot = false; 
@@ -8,6 +9,7 @@ BV::Node::Node()
 	_knodes = 0; _leftx = 0; _rightx = 0; _lefty = 0; _righty = 0, _k = 0;
 	_x = nullptr, _y = nullptr; _guard = nullptr; _isguard = NULL;
 	_clevel = 0; _dlevel = 0;
+	costil_count = 0;
 }
 
 
@@ -34,7 +36,7 @@ BV::Node::Node(Node* past)
 
 void BV::Node::sort()
 {
-	cout << "sort\n";
+//	cout << "sort\n";
 	if (_k>0)
 	{
 		_leftx = _x[0];
@@ -87,7 +89,7 @@ void BV::Node::insert(int x, int y)
 {
 	if (_isleaf == true)
 	{
-		cout << "insert " << x << " " << y << endl;
+	//	cout << "insert " << x << " " << y << endl;
 		int* newx = new int[_k + 1] {0};
 		int* newy = new int[_k + 1]{ 0 };
 		for (int i = 0; i < _k; i++)
@@ -192,7 +194,6 @@ void BV::Node::cut()//new_next parts new_knodes
 			_past->_next = new Node*[1];
 			_past->_next[0] = this;//??
 			master->_root = _past;
- 
 		}
 		
 	
@@ -205,13 +206,11 @@ void BV::Node::cut()//new_next parts new_knodes
 			parts[i]._k = new_k;
 			
 		}
-	//	cout << "new_knodes " << new_knodes << endl; cout << "k " << _k << endl; cout << "new_k" << new_k << endl;
 		for (int i = 0; new_k * new_knodes + i < _k; i++)
 		{
-			parts[i]._k++; cout << "++" << endl;
+			parts[i]._k++; 
 		}
-		cout << "_past->_knodes                  " << _past->_knodes << endl;
-		cout << "_past->_knodes - 1 + new_knodes " << _past->_knodes - 1 + new_knodes << endl;
+
 		new_next = new Node*[_past->_knodes - 1 + new_knodes];//дочерние узлы
 		int ii,ii1;
 		for (ii = 0;_past->_next[ii]!=this ; ii++)
@@ -240,7 +239,7 @@ void BV::Node::cut()//new_next parts new_knodes
 			}
 			ii += parts[i]._k;
 		}
-		delete _past->_next;
+	//	delete _past->_next;
 		_past->_next = new Node * [new_knodes + _past->_knodes - 1];
 		for (int i = 0; i < new_knodes+_past->_knodes-1; i++)
 		{
@@ -249,6 +248,7 @@ void BV::Node::cut()//new_next parts new_knodes
 		_past->_knodes +=  - 1 + new_knodes;
 				
 		_past->cut();
+		_k = 0;
 //		delete this;
 	}
 	else
@@ -269,29 +269,25 @@ void BV::Node::cut()//new_next parts new_knodes
 	
 		parts = new Node[new_knodes];
 		new_k = _knodes/new_knodes;
-		while (new_k * _conddir < _knodes/new_k)
-			new_k++;
+	//	while (new_k * _conddir < _knodes/new_k)			new_k++;
 		for (int i = 0; i < new_knodes; i++)
 		{
 			parts[i]._past = _past;
 			parts[i]._knodes = new_k;
 		}
-		cout << " new_k * new_knodes = " << new_k << " * " << new_knodes << " = " << new_k * new_knodes << endl;
+		cout << "new_k= " << new_k << endl << "new_knodes= " << new_knodes << endl << "_knodes= " << _knodes << endl<< " _past->_knodes= " << _past->_knodes << endl;
+		for (int i = 0; i < _past->_knodes; i++)
+		{
+			cout << " Old_past->_next[i]->_knodes= " << _past->_next[i]->_knodes << endl;
+		}
 		for (int i = 0; new_k * new_knodes + i < _knodes; i++)
 		{
-			parts[i]._knodes++; cout << i << "_ ";
-			if (i>=new_knodes)
-			{
-				cout << " ALARM ";
-			}
-		}cout << endl;
+			parts[i]._knodes++; cout << "+a"<<endl;
+		}
 
 		new_next = new Node*[_past->_knodes - 1 + new_knodes];//дочерние узлы
 		int ii,ii1;
-		for (int i = 0; i < _past->_knodes; i++)
-		{
-			cout <<"XXX "<< _past->_next[i] << endl;
-		}
+	
 		for (ii = 0; _past->_next[ii] != this; ii++)
 		{
 			new_next[ii] = _past->_next[ii]; cout << ii << " _ii_ ";
@@ -301,10 +297,11 @@ void BV::Node::cut()//new_next parts new_knodes
 		{
 			new_next[ii] = &parts[i];
 		}
-		for (int i = ii1; i < _past->_knodes; i++, ii++)
+		for (int i = ii1+1; i < _past->_knodes; i++, ii++)
 		{
-			new_next[ii] = _past->_next[i];
+			new_next[ii] = _past->_next[i]; cout << " cii = " << ii << endl;
 		}
+		cout << " ii = " << ii << endl;
 		ii = 0;
 
 		for (int i = 0; i < new_knodes; i++)///////////////////////////////////////////////////////
@@ -317,14 +314,21 @@ void BV::Node::cut()//new_next parts new_knodes
 				ii++;
 			}
 		}
-		delete _past->_next;
+	//	delete _past->_next;
 		_past->_next = new Node * [new_knodes + _past->_knodes - 1];
 		for (int i = 0; i < new_knodes + _past->_knodes - 1; i++)
 		{
 			_past->_next[i] = new_next[i];
 		}
 		_past->_knodes += - 1 + new_knodes;
+		cout<< " _past->_knodes= " << _past->_knodes << endl;
+		for (int i = 0; i < _past->_knodes; i++)
+		{
+			cout << " _past->_next[i]->_knodes= " << _past->_next[i]->_knodes  << endl;
+		}
+
 		_past->cut();
+		_knodes = 0;
 	//	delete this;
 		///////
 	}
@@ -332,15 +336,69 @@ void BV::Node::cut()//new_next parts new_knodes
 
 void BV::Node::info()
 {
-	cout <<endl<<"___INFO___"<<endl<< "_isroot = " << _isroot << endl
-		<<	"_isleaf = " << _isleaf << endl
-		<<  "   This = " << this << endl
-	//	<<  "  _next = " << _next << endl
-		<<  "  _past = " << _past << endl
-		<<  " Master = " << master->_root << endl
-		<<  "_knodes = " << _knodes << endl
-		<<	"     _k = " << _k << endl;
+	cout << endl << "___INFO___" << endl
+		<< "_isroot = " << _isroot << endl
+		<< "_isleaf = " << _isleaf << endl
+		<< "   This = " << this << endl
+		//	<<  "  _next = " << _next << endl
+		<< "  _past = " << _past << endl
+		<< " Master = " << master->_root << endl
+		<< "_knodes = " << _knodes << endl
+		<< "     _k = " << _k << endl;
+}
 
+
+
+
+void BV::Node::p_info()
+{
+	cout << endl << "___P_INFO___" << endl
+		<< "   This = " << this << endl
+		<< "  _past = " << _past << endl
+		<< " Master = " << master->_root << endl
+		<< "_knodes = " << _knodes << endl
+		<< "     _k = " << _k << endl
+		<< "  X [" << _leftx << ":" << _rightx << "]" << 
+		 " Y [" << _lefty << ":" << _righty << "]" << endl
+		<< " (x,y) : ";
+	for (int i = 0; i < _k; i++)
+	{
+		cout << " " << _x[i] << ":" << _y[i];
+		costil[costil_count] = _x[i];
+		costil_count++;
+	}
+	cout << "COSTIL = " << costil_count;
+	cout << endl;
+}
+
+void BV::Node::print()
+{
+	p_info();
+	
+	for (int i = 0; i < _knodes; i++)
+	{
+		_next[i]->print();
+	}
+	int c;
+	for (int i = 0; i < costil_count; i++)
+	{
+		for (int j = 0; j < costil_count; j++)
+		{
+			if (costil[i]>costil[j])
+			{
+				c = costil[i];
+				costil[i] = costil[j];
+				costil[j] = c;
+				
+			}
+		}
+	}
+	if(_k>0)
+	for (int i = 0; i < costil_count; i++)
+	{
+		cout << " | " << costil[i];
+	}
+	cout << endl;
 }
 
 
