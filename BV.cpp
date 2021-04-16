@@ -18,176 +18,33 @@ BV::BV(int leaffanout, int dirfanout)
 	}
 }
 
-
-
 BV::~BV()
 {
 
 }
 
-
-
 void BV::print_tree()
 {
 	cout << "___PRINT___" << endl << "______________________________" << endl;
-	
-	
-	BV::Node::master->_root->print();
-	//cout << "\n\nPRINT_!________";
-	//if (this)
-	//{
-	//	cout << "\n_knodes     " << _knodes;
-	//	cout << "\n adr        " << this;
-	//	cout << "\n past       " << _past;
-	//	cout << "\n next       " << _next;
-	//	for (int j = 0; j < _k; j++)
-	//	{
-	//		cout << "\n |x= " << _x[j];
-	//		cout << "\n |y= " << _y[j] << endl;
-	//	}
-	//	cout << "\n___________________";
+	cout << " Master = " << _root << endl;
+	_root->print();
+}
 
-	//	if (_next != NULL)
-	//		for (int i = 0; i < _knodes; i++)
-	//		{
-	//			{
-	//				cout << "\nnext " << i << ": ";
-	//				cout << "\nnext_k     " << _next[i]._k;
-	//			}
-	//			(_next + i)->print_tree();
-	//		}
-	//}
+void BV::setboards_all()
+{
+	cout << "___setboards_all___" << endl << "______________________________" << endl;
+	_root->setboards();
 }
 
 bool BV::search(int x, int y)
 {
-	////рекурсивный поиск
-	//if (this)
-	//{
-	//	//cout << "\n_knodes     " << _knodes;
-	//	//cout << "\n adr        " << this;
-	//	//cout << "\n past       " << _past;
-	//	//cout << "\n next       " << _next;
-	//	for (int i = 0; i < _k; i++)
-	//	{
-	//		if ((x == _x[i]) && (y == _y[i]))
-	//		{
-	//			cout << "\n success search " << x << ":" << y;
-	//			return true;
-	//		}
-	//	}
-	//	if (_next != NULL)
-	//	{
-	//		for (int i = 0; i < _knodes; i++)//_knodes
-	//		{
-
-	//			if ((x < _x[i]))
-	//			{
-	//				//	if ((_next + i)->search(x)) { return true; }
-	//			}
-
-	//			if ((_next + i)->search(x, y)) { return true; }
-	//		}
-	//	/*	if ((x > _data[_knodes])&& (_next + _knodes - 1)->search(x, y))
-	//		{
-	//			 return true; 
-	//		}*/
-	//	}
-	//}
-	//{
-	//	//cout << "\n unsuccess search " << x;
-	//	return false;
-	//}
-
-	return false;
+	return _root->search(x, y);
 }
 
-
-
-
-
-//void BV::makeH()
-//{
-//	bool f;
-//	do
-//	{
-//		f = makeH1();
-//	} while (f);
-//}
-//
-//bool BV::makeH1()
-//{
-//	system("pause");
-//	//аналогично cut при переполнении узла указателями делит его
-//	if (this)
-//		if (_knodes > _dirfanout)
-//		{
-//			cout << "\n _knodes>_dirfanout " << _knodes << "<" << _dirfanout;
-//			for (int i = 0; i < 30; i++)
-//			{
-//				_size[i] = -1;
-//			}
-//			int nextd, knodes;
-//			nextd = _knodes / _dirfanout; knodes = 1;
-//			if (nextd * _dirfanout < _knodes)
-//			{
-//				nextd++;
-//			}
-//			while (knodes * nextd <= _knodes)
-//			{
-//				knodes++;
-//			}knodes--;
-//
-//			_size[nextd] = -nextd * knodes + _knodes;//остаток
-//			cout << "\n остаток " << _size[nextd];
-//
-//			for (int i = 0; i < nextd; i++)
-//			{
-//				_size[i] = knodes;
-//			}
-//			for (int i = 0; i < _size[nextd]; i++)
-//			{
-//				_size[i]++;
-//			}
-//
-//			BV* next;
-//			int siz = 0;
-//			next = new BV[nextd];
-//			for (int i = 0; i < nextd; i++)
-//			{
-//				next[i]._past = this;
-//				next[i]._next = &_next[siz];
-//				next[i]._knodes = _size[i];
-//				for (int j = 0; j < _size[i]; j++)
-//				{
-//					next[i]._next[j] = _next[siz];
-//					next[i]._next[j]._past = &next[i];
-//					siz++;
-//				}
-//			}
-//			next->_past->_knodes = nextd;
-//			_next = next;
-//			for (int i = 0; i < _knodes; i++)
-//			{
-//	//			_next[i]._leftboard = _next[i]._next->_leftboard;
-//		//		_next[i]._rightboard = _next[i]._next[_next[i]._knodes - 1]._rightboard;
-//			}
-//			return true;//были созданы узлы
-//		}
-//
-//	return false;//не были созданы узлы
-//}
-//
-//void BV::makeH2()
-//{
-//	bool f;
-//	do
-//	{
-//		f = _past->makeH1();
-//	} while (f);
-//	if (_past)
-//		_past->makeH2();
-//}
+bool BV::del(int x, int y)
+{
+	return _root->del(x, y);
+}
 
 void BV::constimput(int leaffanout, int dirfanout)
 {
@@ -205,10 +62,7 @@ void BV::constimput(int leaffanout, int dirfanout)
 
 void BV::insert(int x, int y)
 {
-	//BV::Node::master->_root->insert(x, y);
-	cout << "		   ROOT  " << _root << endl;
-	cout << "	 ROOT knodes " << _root->_knodes << endl;
-	cout << "	   	  ROOT k " << _root->_k << endl;
+	//cout << "		   ROOT  " << _root << endl << "	 ROOT knodes " << _root->_knodes << endl << "	   	  ROOT k " << _root->_k << endl;
 	_root->insert(x, y);
 }
 

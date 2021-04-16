@@ -13,24 +13,16 @@ private:
 		_conddir,//минимальное количество ключей
 		_size[30];//для функций CUT,makeH1
 
-//	int _k;//количество ключей в узле
-//	int _knodes;//количество указателей 
 	void constimput(int leaffanout, int dirfanout);
 
-
-	void cut();//деление узла, переполненного ключами
-
-
-public:
+ public:
 	void insert(int x, int y);//вставка ключа в дерево
 	BV(int leaffanout,int dirfanout);
 	~BV();
 
 	void print_tree();//вывод
-	bool search(int x,int y);//поиск по зачению
-	
-	void makeH();//деление узла, переполненного указателями
-
+	bool search(int x, int y);//поиск по зачению
+	bool del(int x, int y);//поиск по зачению
 
 	class Node
 	{
@@ -50,7 +42,6 @@ public:
 		Node* _past;//родитель
 
 		Node();
-
 		Node(Node* past);
 		Node(char root);
 
@@ -60,13 +51,14 @@ public:
 		void info();
 		void p_info();
 		void print();
-		////////////////////////
-		static int costil[1000];
-		static int costil_count;
-
+		bool search(int x, int y);
+		void setboards();
+		void setboards_up();
+		bool del(int x, int y);
+		void cut_del();
 
 	};
-	
+	void setboards_all();
 	Node* _root;//корень
 	
 };
